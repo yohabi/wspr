@@ -1,16 +1,14 @@
-This is software WSPR implementation for DIY QRP/QRPp transiever: ESP32/STM32 + SI5351 + GPS + DS3231 + OLED.
+This is software WSPR implementation for DIY QRP/QRPp transiever: ESP32 (WROOM 32) + SI5351 (I2C) + GPS (serial TTL) + OLED (I2C).
 
 Project for tracking radio-amateur during trip.
 
 ## TODO:
 
-- check WSPR code in HW
-
 - WSPR message ~~type 1~~ and **type 2**
 
-- ~~GPStoQTH6()~~ **done**
+- ~~GPStoQTH6()~~ **(done)**
 
-- make schematic
+- make schematic and check WSPR code in HW
 
 - GPS module: getGPSData(), getGPSDateTime()
 
