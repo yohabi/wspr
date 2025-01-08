@@ -2,27 +2,40 @@ This is software WSPR implementation for DIY QRP/QRPp transiever: ESP32/STM32 + 
 
 Project for tracking radio-amateur during trip.
 
-TODO:
+## TODO:
 
 - check WSPR code in HW
 
-- ~~WSPR message type 1~~ and **type 2**
+- WSPR message ~~type 1~~ and **type 2**
 
-- ~~GPStoQTH6()~~
+- ~~GPStoQTH6()~~ **done**
 
 - make schematic
 
-- GPS module: getGPSCoordinates()
-
-- GPS module: getGPSDateTime()
-
-- DS3231 module: putDSDateTime()
-
-- DS3231 module: getDSDateTime()
+- GPS module: getGPSData(), getGPSDateTime()
 
 - SI5351 module: setFrequency()
 
 - SSD13xx OLED module
+
+- WIFI interface for configuration: callsign, power, switch types 1/2, intervals (every N interval, once/many at GPS warmed and accuracy OK)
+
+
+## Accuracy calculation
+
+WSPR accuracy with message type 1 (AA00):
+
+- at equator LON 2deg = **222,63km** x LAT 1deg = **111,13km**
+
+- at 60deg LAT (SPb) **111,32km** x **111,13km**
+
+WSPR accuracy with message type 2 (AA00AA):
+
+- at equator LON 2deg/24 = **9,3km** x LAT 1deg/24 = **4,6km**
+
+- at 60deg **4,6** x **4,6km**
+
+## Xtra debug information:
 
 UB1CBV -> 214762719 0ccd04df   0000[1100.11001101.00000100.11011111]
 
