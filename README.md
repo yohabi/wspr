@@ -1,4 +1,4 @@
-This is software WSPR implementation for DIY QRP/QRPp transiever: ESP32 (WROOM 32) + SI5351 (I2C) + GPS (serial TTL) + OLED (I2C).
+This is software WSPR implementation for DIY QRP/QRPp transiever: ESP32 (WROOM 32) + SI5351 (I2C) + GPS (serial TTL) + OLED (I2C) + DS3231 (I2C).
 
 Project for tracking radio-amateur during trip.
 
@@ -28,21 +28,21 @@ Pre-configured mode:
 
 ## TODO:
 
-- WSPR message ~~type 1~~ and **type 2**
+- ✅ WSPR message type 1 and 3 - **WSPREncodeMessage()**
 
-- ~~GPStoQTH6()~~ **(done)**
+- ✅ Convert LON and LAT to QTH grid locator - **WSPRGPStoQTH6()**
 
-- make schematic and check WSPR code in HW
+- ⭕ make schematic and ~~check WSPR code in HW~~
 
-- GPS module: getGPSData(), getGPSDateTime()
+- ⭕ GPS module: getGPSData(), getGPSDateTime()
 
-- SI5351 module: setFrequency()
+- ⭕ SI5351 module: setFrequency()
 
-- ~~SSD13xx OLED module~~ **(done)**
+- ✅ SSD13xx OLED module
 
-- ~~DS3231 RTC module~~ **(done)**
+- ✅ DS3231 RTC module
 
-- WIFI interface for configuration: set callsign, power, switch WSPR message types 1/2, set intervals, set DS date/time
+- ✅ WIFI interface for configuration: set callsign, power, switch WSPR message types 1 or 3, set intervals, set DS date/time
 
 ## Accuracy calculation
 
@@ -52,25 +52,11 @@ WSPR accuracy with message type 1 (AA00):
 
 - at 60deg LAT (SPb) **111,32km** x **111,13km**
 
-WSPR accuracy with message type 2 (AA00AA):
+WSPR accuracy with message type 3 (AA00AA):
 
 - at equator LON 2deg/24 = **9,3km** x LAT 1deg/24 = **4,6km**
 
 - at 60deg **4,6** x **4,6km**
-
-## Xtra debug information:
-
-UB1CBV -> 214762719 0ccd04df   0000[1100.11001101.00000100.11011111]
-
-KO59   -> 13469     0000349d   00000000.00000000.0[0110100.10011101]
-
-30dBm  -> 30+64 = 94 0[1011110]
-
-QTHPower -> 1724126 001a4ede   00000000.00[011010.01001110.1][1011110]
-
-summary [1100.11001101.00000100.11011111][011010.01001110.1][1011110]
-
-11001100110100000100110111110110100100111011011110
 
 ## Schematic
 
@@ -80,7 +66,9 @@ ESP-WROOM-32 board - "ESP32 Dev Module" in Arduino IDE.
 
 EN connected to GND via 10u capacitor to allow flashing without using buttons.
 
-### OLED 0.91" I2C 128x32
+### OLED 0.91" I2C 128x32 address 0x3C
+
+[Adafruit SSD1306](https://github.com/adafruit/Adafruit_SSD1306) library used
 
 VCC -> 3.3V output of AMS1117 on ESP32
 
@@ -88,41 +76,37 @@ SDA -> GPIO13
 
 SCL -> GPIO14
 
-```Wire.begin(13, 14);```
+```
+#define __I2C_SDA 13
+#define __I2C_SCL 14
+#define __OLED_ADDR 0x3C
+#define __OLED_W 128
+#define __OLED_H 32
+
+Adafruit_SSD1306 display(__OLED_W, __OLED_H, &Wire, -1);
+Wire.begin(__I2C_SDA, __I2C_SCL);
+display.begin(SSD1306_SWITCHCAPVCC, __OLED_ADDR);
+```
 
 ### ZS-042 DS3231 RTC
 
+[Adafruit RTClib](https://github.com/adafruit/RTClib) library used
+
+VCC -> 3.3V
+
+SDA -> GPIO13
+
+SCL -> GPIO14
+
+```
+#define __I2C_SDA 13
+#define __I2C_SCL 14
+Wire.begin(__I2C_SDA, __I2C_SCL);
+dsRTC.begin(&Wire);
+```
 
 ## Wifi web-page
 
-Checkbox for "Allow WSPR msg type1 (1 minute, lower accuracy)"
+**TODO** Describe UI
 
-Drop-down list for "Intervals"
-
-Everytime (every 2 minutes) (no x option)
-
-Every 10 minutes
-
-Every 20 minutes
-
-Every hour
-
-"Sequence"
-
-x1. Transmit once
-
-x2. Transmit 2 times
-
-x3. Transmit 3 times
-
-Input for "Callsign"
-
-Input for "Power (dBm, Watts)"
-
-Save to EEPROM
-
-Print current Date/Time
-
-Input for Date/Time
-
-Save to DS3231
+![](ui.png)
